@@ -155,202 +155,126 @@ class Company:
 		self.countryMeanGovernance = pd.DataFrame.mean(self.countryMeanGovernance) * 100  # fourth step
 
 		#  ESG combined INDUSTRY
-		self.industry_list = []  # list of companies of a specific industry
-		for i in range(self.industryCount):
-			self.industry_list.append(self.industryInstrument.to_numpy()[i][0])
-		#print(self.industry_list)
+		self.industry_list = self.create_list(self.industryCount, self.industryInstrument)  # list of companies of a specific industry
 
-		self.industry_esg_list = []  # list of esg values of companies within the same industry
 		self.industryESG = self.industryESG.fillna(-1)
-		for i in range(self.industryCount):
-			if self.industryESG.to_numpy()[i][0] != -1:
-				self.industry_esg_list.append(self.industryESG.to_numpy()[i][0])
-		#print(self.industry_esg_list)
+		self.industry_esg_list = self.create_list_remove_nas(self.industryCount, self.industryESG)  # list of esg values of companies within the same industry
+
 		self.industry_esg_list_len = len(self.industry_esg_list)
 
-		self.industryPos = 0
-		for i in range(len(self.industry_esg_list)):
-			if self.industry_esg_list[i] < self.esg_value:
-				self.industryPos = self.industryPos + 1
+		self.industryPos = self.get_pos(self.industry_esg_list, self.esg_value)
 		self.industryRelative = self.industryPos / (len(self.industry_esg_list))
 
 		#  ESG INDUSTRY
-		self.industry_list_r = []  # list of companies of a specific industry
-		for i in range(self.industryCount):
-			self.industry_list_r.append(self.industryInstrumentR.to_numpy()[i][0])
-		# print(self.industry_list)
+		self.industry_list_r = self.create_list(self.industryCount, self.industryInstrumentR)  # list of companies of a specific industry
 
-		self.industry_esg_list_r = []  # list of esg values of companies within the same industry
 		self.industryESGR = self.industryESGR.fillna(-1)
-		for i in range(self.industryCount):
-			if self.industryESGR.to_numpy()[i][0] != -1:
-				self.industry_esg_list_r.append(self.industryESGR.to_numpy()[i][0])
-		# print(self.industry_esg_list)
+		self.industry_esg_list_r = self.create_list_remove_nas(self.industryCount, self.industryESGR)  # list of esg values of companies within the same industry
 		self.industry_esg_list_r_len = len(self.industry_esg_list_r)
 
-		self.industryPosR = 0
-		for i in range(len(self.industry_esg_list_r)):
-			if self.industry_esg_list_r[i] < self.esg_value_r:
-				self.industryPosR = self.industryPosR + 1
+		self.industryPosR = self.get_pos(self.industry_esg_list_r, self.esg_value_r)
 		self.industryRelativeR = self.industryPosR / (len(self.industry_esg_list_r))
 
 		#  ENVIRONMENTAL INDUSTRY
-		self.industry_list_ordered_environmental = []  # list of companies of a specific industry
-		for i in range(self.industryCount):
-			self.industry_list_ordered_environmental.append(self.industryInstrumentEnvironmental.to_numpy()[i][0])
-		# print(self.industry_list)
+		self.industry_list_ordered_environmental = self.create_list(self.industryCount, self.industryInstrumentEnvironmental)  # list of companies of a specific industry
 
-		self.industry_environmental_list = []  # list of environmental (esg) values of companies within the same industry
 		self.industryEnvironmental = self.industryEnvironmental.fillna(-1)
-		for i in range(self.industryCount):
-			if self.industryEnvironmental.to_numpy()[i][0] != -1:
-				self.industry_environmental_list.append(self.industryEnvironmental.to_numpy()[i][0])
+		self.industry_environmental_list = self.create_list_remove_nas(self.industryCount, self.industryEnvironmental)  # list of environmental (esg) values of companies within the same industry
 
-		self.industryEnvironmentalPos = 0
-		for i in range(len(self.industry_environmental_list)):
-			if self.industry_environmental_list[i] < self.environmental:
-				self.industryEnvironmentalPos = self.industryEnvironmentalPos + 1
+		self.industryEnvironmentalPos = self.get_pos(self.industry_environmental_list, self.environmental)
 		self.industryRelativeEnvironmental = self.industryEnvironmentalPos / (len(self.industry_environmental_list))
 
 		#  SOCIAL INDUSTRY
-		self.industry_list_ordered_social = []  # list of companies of a specific industry
-		for i in range(self.industryCount):
-			self.industry_list_ordered_social.append(self.industryInstrumentSocial.to_numpy()[i][0])
-		# print(self.industry_list)
+		self.industry_list_ordered_social = self.create_list(self.industryCount, self.industryInstrumentSocial)  # list of companies of a specific industry
 
-		self.industry_social_list = []  # list of environmental (esg) values of companies within the same industry
 		self.industrySocial = self.industrySocial.fillna(-1)
-		for i in range(self.industryCount):
-			if self.industrySocial.to_numpy()[i][0] != -1:
-				self.industry_social_list.append(self.industrySocial.to_numpy()[i][0])
+		self.industry_social_list = self.create_list_remove_nas(self.industryCount, self.industrySocial)  # list of environmental (esg) values of companies within the same industry
 
-		self.industrySocialPos = 0
-		for i in range(len(self.industry_social_list)):
-			if self.industry_social_list[i] < self.social:
-				self.industrySocialPos = self.industrySocialPos + 1
+		self.industrySocialPos = self.get_pos(self.industry_social_list, self.social)
 		self.industryRelativeSocial = self.industrySocialPos / (len(self.industry_social_list))
 
 		#  GOVERNANCE INDUSTRY
-		self.industry_list_ordered_governance = []  # list of companies of a specific industry
-		for i in range(self.industryCount):
-			self.industry_list_ordered_governance.append(self.industryInstrumentGovernance.to_numpy()[i][0])
-		# print(self.industry_list)
+		self.industry_list_ordered_governance = self.create_list(self.industryCount, self.industryInstrumentGovernance)  # list of companies of a specific industry
 
-		self.industry_governance_list = []  # list of environmental (esg) values of companies within the same industry
 		self.industryGovernance = self.industryGovernance.fillna(-1)
-		for i in range(self.industryCount):
-			if self.industryGovernance.to_numpy()[i][0] != -1:
-				self.industry_governance_list.append(self.industryGovernance.to_numpy()[i][0])
+		self.industry_governance_list = self.create_list_remove_nas(self.industryCount, self.industryGovernance)  # list of environmental (esg) values of companies within the same industry
 
-		self.industryGovernancePos = 0
-		for i in range(len(self.industry_governance_list)):
-			if self.industry_governance_list[i] < self.governance:
-				self.industryGovernancePos = self.industryGovernancePos + 1
+		self.industryGovernancePos = self.get_pos(self.industry_governance_list, self.governance)
 		self.industryRelativeGovernance = self.industryGovernancePos / (len(self.industry_governance_list))
 
 		#  ESG combined COUNTRY
-		self.country_list = []
-		for i in range(self.countryCount):
-			self.country_list.append(self.countryInstrument.to_numpy()[i][0])
-		# print(self.country_list)
+		self.country_list = self.create_list(self.countryCount, self.countryInstrument)
 
-		self.country_esg_list = []
 		self.countryESG = self.countryESG.fillna(-1)
-		for i in range(self.countryCount):
-			if self.countryESG.to_numpy()[i][0] != -1:
-				self.country_esg_list.append(self.countryESG.to_numpy()[i][0])
-		# print(self.country_esg_list)
+		self.country_esg_list = self.create_list_remove_nas(self.countryCount, self.countryESG)
 		self.country_esg_list_len = len(self.country_esg_list)
 
-		self.countryPos = 0
-		for i in range(len(self.country_esg_list)):
-			if self.country_esg_list[i] < self.esg_value:
-				self.countryPos = self.countryPos + 1
+		self.countryPos = self.get_pos(self.country_esg_list, self.esg_value)
 		self.countryRelative = self.countryPos / (len(self.country_esg_list))
 
 		#  ESG COUNTRY
-		self.country_list_r = []
-		for i in range(self.countryCount):
-			self.country_list_r.append(self.countryInstrumentR.to_numpy()[i][0])
-		# print(self.country_list)
+		self.country_list_r = self.create_list(self.countryCount, self.countryInstrumentR)
 
-		self.country_esg_list_r = []
 		self.countryESGR = self.countryESGR.fillna(-1)
-		for i in range(self.countryCount):
-			if self.countryESGR.to_numpy()[i][0] != -1:
-				self.country_esg_list_r.append(self.countryESGR.to_numpy()[i][0])
-		# print(self.country_esg_list)
+		self.country_esg_list_r = self.create_list_remove_nas(self.countryCount, self.countryESGR)
 		self.country_esg_list_r_len = len(self.country_esg_list_r)
 
-		self.countryPosR = 0
-		for i in range(len(self.country_esg_list_r)):
-			if self.country_esg_list_r[i] < self.esg_value_r:
-				self.countryPosR = self.countryPosR + 1
+		self.countryPosR = self.get_pos(self.country_esg_list_r, self.esg_value_r)
 		self.countryRelativeR = self.countryPosR / (len(self.country_esg_list_r))
 
 		#  ENVIRONMENTAL COUNTRY
-		self.country_list_ordered_environmental = []
-		for i in range(self.countryCount):
-			self.country_list_ordered_environmental.append(self.countryInstrumentEnvironmental.to_numpy()[i][0])
-		# print(self.country_list)
+		self.country_list_ordered_environmental = self.create_list(self.countryCount, self.countryInstrumentEnvironmental)
 
-		self.country_environmental_list = []
 		self.countryEnvironmental = self.countryEnvironmental.fillna(-1)
-		for i in range(self.countryCountEnvironmental):
-			if self.countryEnvironmental.to_numpy()[i][0] != -1:
-				self.country_environmental_list.append(self.countryEnvironmental.to_numpy()[i][0])
+		self.country_environmental_list = self.create_list_remove_nas(self.countryCount, self.countryEnvironmental)
 
-		self.countryEnvironmentalPos = 0
-		for i in range(len(self.country_environmental_list)):
-			if self.country_environmental_list[i] < self.environmental:
-				self.countryEnvironmentalPos = self.countryEnvironmentalPos + 1
+		self.countryEnvironmentalPos = self.get_pos(self.country_environmental_list, self.environmental)
 		self.countryRelativeEnvironmental = self.countryEnvironmentalPos / (len(self.country_environmental_list))
 
 		# SOCIAL COUNTRY
-		self.country_list_ordered_social = []
-		for i in range(self.countryCount):
-			self.country_list_ordered_social.append(self.countryInstrumentSocial.to_numpy()[i][0])
-		# print(self.country_list)
+		self.country_list_ordered_social = self.create_list(self.countryCount, self.countryInstrumentSocial)
 
-		self.country_social_list = []
 		self.countrySocial = self.countrySocial.fillna(-1)
-		for i in range(self.countryCountSocial):
-			if self.countrySocial.to_numpy()[i][0] != -1:
-				self.country_social_list.append(self.countrySocial.to_numpy()[i][0])
+		self.country_social_list = self.create_list_remove_nas(self.countryCountSocial, self.countrySocial)
 
-		self.countrySocialPos = 0
-		for i in range(len(self.country_social_list)):
-			if self.country_social_list[i] < self.social:
-				self.countrySocialPos = self.countrySocialPos + 1
+		self.countrySocialPos = self.get_pos(self.country_social_list, self.social)
 		self.countryRelativeSocial = self.countrySocialPos / (len(self.country_social_list))
 
 		# GOVERNANCE COUNTRY
-		self.country_list_ordered_governance = []
-		for i in range(self.countryCount):
-			self.country_list_ordered_governance.append(self.countryInstrumentGovernance.to_numpy()[i][0])
-		# print(self.country_list)
+		self.country_list_ordered_governance = self.create_list(self.countryCount, self.countryInstrumentGovernance)
 
-		self.country_governance_list = []
 		self.countryGovernance = self.countryGovernance.fillna(-1)
-		for i in range(self.countryCount):
-			if self.countryGovernance.to_numpy()[i][0] != -1:
-				self.country_governance_list.append(self.countryGovernance.to_numpy()[i][0])
+		self.country_governance_list = self.create_list_remove_nas(self.countryCount, self.countryGovernance)
 
-		self.countryGovernancePos = 0
-		for i in range(len(self.country_governance_list)):
-			if self.country_governance_list[i] < self.governance:
-				self.countryGovernancePos = self.countryGovernancePos + 1
+		self.countryGovernancePos = self.get_pos(self.country_governance_list, self.governance)
 		self.countryRelativeGovernance = self.countryGovernancePos / (len(self.country_governance_list))
 
 	def own_score(self, e_weight, s_weight, g_weight):
 		e_weight * self.environmental + s_weight * self.social + g_weight * self.governance
 
+	def create_list(self, number_of_elements, retrieved_list):
+		array_of_elements = []
+		for i in range(number_of_elements):
+			array_of_elements.append(retrieved_list.to_numpy()[i][0])
+		return array_of_elements
+
+	def create_list_remove_nas(self, number_of_elements, retrieved_list):
+		array_of_elements = []
+		for i in range(number_of_elements):
+			if retrieved_list.to_numpy()[i][0] != -1:
+				array_of_elements.append(retrieved_list.to_numpy()[i][0])
+		return array_of_elements
+
+	def get_pos(self, retrieved_list, value_of_pos):
+		pos = 0
+		for i in range(len(retrieved_list)):
+			if retrieved_list[i] < value_of_pos:
+				pos += 1
+		return pos
+
 
 #compX = Company("RACE.MI")
 compV = Company("BMWG.DE") # BMW, german car manufacturer
-
-print()
-
 compX = Company("MOED.MI") # Arnoldo Mondadori Editore, italian company engaged in the publishing industry
 #compX = Company("LVMH.PA") # Louis Vuitton, french luxury goods producer
 compY = Company("PIRC.MI") # Pirelli, italian tire producer
@@ -425,10 +349,6 @@ app.layout = dbc.Container([
 							"label": html.Div(['Country'], style={'color': 'white', 'font-size': 20}),
 							"value": "Country",
 						},
-						#{
-						#	"label": html.Div(['Region'], style={'color': 'white', 'font-size': 20}),
-						#	"value": "Region",
-						#},
 					], value='Industry', style={'background-color': 'black', 'background': 'black'}, id='drop_down_1', multi=False,
 				),
 			]),
@@ -484,7 +404,7 @@ app.layout = dbc.Container([
 					contentEditable=False,
 					readOnly=True,
 					draggable=False,
-					value='Customize ESG weights',
+					value='Customize ESG weights:',
 				),
 				dcc.Input(
 					id="input_environment_weight",
