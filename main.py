@@ -252,10 +252,10 @@ class Company:
 		return pos
 
 	def own_score(self, e_weight, s_weight, g_weight):
-		sum = e_weight + s_weight + g_weight
-		e_new_weight = e_weight / sum
-		s_new_weight = s_weight / sum
-		g_new_weight = g_weight / sum
+		total = e_weight + s_weight + g_weight
+		e_new_weight = e_weight / total
+		s_new_weight = s_weight / total
+		g_new_weight = g_weight / total
 		return e_new_weight * self.environmental + s_new_weight * self.social + g_new_weight * self.governance
 
 
@@ -265,7 +265,6 @@ time.sleep(5)  # because the server is causing trouble when retrieving all at on
 print("Starts MOED.MI...\n")
 compX = Company("MOED.MI")  # Arnoldo Mondadori Editore, italian company engaged in the publishing industry
 print("Finished MOED.MI\n")
-#compX = Company("LVMH.PA") # Louis Vuitton, french luxury goods producer
 time.sleep(5)  # because the server is causing trouble when retrieving all at once
 print("Starts PIRC.MI...\n")
 compY = Company("PIRC.MI") # Pirelli, italian tire producer
@@ -275,14 +274,6 @@ print("Finished PIRC.MI\n")
 # -- DASH --
 
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.DARKLY])
-
-colors = {
-	'background': '#1e3e52',
-	'graph_blue': '#4fcdf8',
-	'graph_orange': '#edcf6e',
-	'graph_lime': '#dff466',
-	'graph_green': '#0cedb9'
-}
 
 app.layout = dbc.Container([
 	dbc.Row([  # 1st row open
@@ -388,7 +379,7 @@ app.layout = dbc.Container([
 					id="custom_s_weight",
 					type='number',
 					value='',
-					debounce=True,  # changes in the text will be sent to the server as soon as you hit enter
+					debounce=True,
 					maxLength=20,
 					size=25,
 					placeholder="S weight",
@@ -397,7 +388,7 @@ app.layout = dbc.Container([
 					id="custom_g_weight",
 					type='number',
 					value='',
-					debounce=True,  # changes in the text will be sent to the server as soon as you hit enter
+					debounce=True,
 					maxLength=20,
 					size=25,
 					placeholder="G weight",
@@ -440,7 +431,6 @@ app.layout = dbc.Container([
 # ------------------------------------------------------------------------------------------------------------------ #
 # CALLBACK
 
-
 @app.callback(
 	Output(component_id='bar_chart', component_property='figure'),
 	Output(component_id='esg_score_text', component_property='value'),
@@ -448,8 +438,8 @@ app.layout = dbc.Container([
 	Input(component_id='drop_down_1', component_property='value'),  # industry, country dropdown
 	Input(component_id='drop_down_2', component_property='value'),  # esg , e, s, g dropdown
 	Input(component_id='input_company', component_property='value'),
-	Input(component_id='custom_e_weight', component_property='value'),
-	Input(component_id='custom_s_weight', component_property='value'),
+	Input(component_id='custom_e_weight', component_property='value'),  # custom environment weight
+	Input(component_id='custom_s_weight', component_property='value'),  # custom social weight
 	Input(component_id='custom_g_weight', component_property='value')  # custom governance weight
 )
 def update(option_slcted, esg_slected, comp_input, e, s, g):
@@ -556,13 +546,12 @@ def update(option_slcted, esg_slected, comp_input, e, s, g):
 			go.Bar(
 				x=comp_industry_list,
 				y=comp_esg_list,
-				marker_color=colorPlot  # '#0cedb9'
+				marker_color=colorPlot
 			)
 		],
 		'layout':
 			go.Layout(
 				title="Performance in " + industry_or_company,
-				# xaxis={'title' : 'companies'},
 				yaxis={'title': 'ESG Score'},
 				paper_bgcolor='black',
 				plot_bgcolor='black',  # bg color of the plot (within the graph)
