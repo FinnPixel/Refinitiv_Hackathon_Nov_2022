@@ -16,6 +16,7 @@ from dash.dependencies import Input, Output
 cf.set_config_file(offline=True)
 
 import sys
+import os
 print(sys.version)
 
 ek.__version__
@@ -23,7 +24,10 @@ cf.__version__
 pd.__version__
 np.__version__
 
-ek.set_app_key('d237d13770a54ecab576a30e7cb25b470e82dba2')
+api_key = os.getenv("EIKON_APP_KEY")
+if not api_key:
+    raise RuntimeError("EIKON_APP_KEY not set — see README")
+ek.set_app_key(api_key)
 
 
 class Company:
